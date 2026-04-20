@@ -27,7 +27,7 @@ export function About({
               <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
                 <Image
                   src={photoUrl}
-                  alt={principal.name}
+                  alt={principal?.name ?? "Foto"}
                   fill
                   className="object-cover"
                 />
