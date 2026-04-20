@@ -1,0 +1,15 @@
+{
+  "name": "stevedavila-estudioj",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @estudioj/api\" \"npm run dev -w @estudioj/web\"",
+    "build": "npm run build -w @estudioj/api && npm run build -w @estudioj/web",
+    "start": "concurrently -n api,web -c blue,green \"npm run start -w @estudioj/api\" \"npm run start -w @estudioj/web\""
+  },
+  "devDependencies": {
+    "concurrently": "9.2.0"
+  }
+}
