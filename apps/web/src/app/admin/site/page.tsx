@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AdminShell } from "@/app/admin/AdminShell";
 import { adminApi } from "@/lib/adminApi";
 import type { SiteConfig } from "@/lib/types";
+import { sanitizeImageUrl } from "@/lib/format";
 
 export default function AdminSitePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -87,6 +88,16 @@ export default function AdminSitePage() {
                 onChange={(v) => setConfig({ ...config, contact_email: v })}
               />
             </div>
+            {config.logo_url ? (
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-xs font-semibold text-slate-700">Previsualización</div>
+                <img
+                  src={sanitizeImageUrl(config.logo_url)}
+                  alt="Logo"
+                  className="mt-3 h-10 w-auto"
+                />
+              </div>
+            ) : null}
           </Card>
 
           <Card title="Contacto">
