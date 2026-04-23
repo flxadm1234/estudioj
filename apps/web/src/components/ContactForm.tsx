@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "")
+    .trim()
+    .replace(/`/g, "")
+    .trim() || "";
 
 export function ContactForm() {
   const [fullName, setFullName] = useState("");
