@@ -26,7 +26,7 @@ export default async function HomePage() {
     <div className="min-h-screen">
       <Header config={config} />
       <main>
-        <Hero hero={hero} />
+        <Hero hero={hero} heroLogoUrl={config.hero_logo_url} />
         <Benefits />
         <About config={config} principal={principal} />
         <ServicesGrid services={services} />

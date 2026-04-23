@@ -83,6 +83,11 @@ export default function AdminSitePage() {
                 onChange={(v) => setConfig({ ...config, logo_url: v || null })}
               />
               <Field
+                label="Logo banner (derecha) URL"
+                value={config.hero_logo_url ?? ""}
+                onChange={(v) => setConfig({ ...config, hero_logo_url: v || null })}
+              />
+              <Field
                 label="Correo"
                 value={config.contact_email}
                 onChange={(v) => setConfig({ ...config, contact_email: v })}
@@ -95,6 +100,16 @@ export default function AdminSitePage() {
                   src={sanitizeImageUrl(config.logo_url)}
                   alt="Logo"
                   className="mt-3 h-10 w-auto"
+                />
+              </div>
+            ) : null}
+            {config.hero_logo_url ? (
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-xs font-semibold text-slate-700">Previsualización (banner derecha)</div>
+                <img
+                  src={sanitizeImageUrl(config.hero_logo_url)}
+                  alt="Logo banner"
+                  className="mt-3 h-16 w-auto"
                 />
               </div>
             ) : null}

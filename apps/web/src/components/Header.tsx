@@ -12,7 +12,7 @@ export function Header({ config }: { config: SiteConfig }) {
   const logoUrl = config.logo_url ? sanitizeImageUrl(config.logo_url) : null;
 
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="relative z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
       <div className="bg-navy text-white">
         <Container>
           <div className="flex items-center justify-between gap-4 py-2 text-sm">

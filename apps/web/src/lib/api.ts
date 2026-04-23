@@ -24,6 +24,7 @@ export function getSiteConfig() {
     whatsapp_phone: null,
     address: null,
     logo_url: null,
+    hero_logo_url: null,
     about_title: "Quiénes Somos",
     about_body:
       "Somos un estudio jurídico orientado a la excelencia técnica, la estrategia y la confidencialidad.",

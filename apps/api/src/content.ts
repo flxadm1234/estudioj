@@ -4,6 +4,7 @@ export async function getSiteConfig() {
   const { rows } = await pool.query(
     `select
       site_name, domain, contact_email, phone, whatsapp_phone, address, logo_url,
+      hero_logo_url,
       about_title, about_body, stats, colors_hex, social_links
      from site_config
      order by created_at desc
@@ -15,6 +16,7 @@ export async function getSiteConfig() {
      values ('STEVE DAVILA & ABOGADOS EIRL','stevedavila.com','studioj@stevedavila.com')
      returning
       site_name, domain, contact_email, phone, whatsapp_phone, address, logo_url,
+      hero_logo_url,
       about_title, about_body, stats, colors_hex, social_links`
   );
   return inserted.rows[0];

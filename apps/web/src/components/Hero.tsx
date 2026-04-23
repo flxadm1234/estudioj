@@ -1,12 +1,16 @@
 import type { HeroSection } from "@/lib/types";
 import { Container } from "@/components/Container";
+import { sanitizeImageUrl } from "@/lib/format";
 
-export function Hero({ hero }: { hero: HeroSection }) {
+export function Hero({ hero, heroLogoUrl }: { hero: HeroSection; heroLogoUrl?: string | null }) {
+  const bg = sanitizeImageUrl(hero.image_url);
+  const rightLogo = heroLogoUrl ? sanitizeImageUrl(heroLogoUrl) : null;
+
   return (
     <section
       className="relative isolate overflow-hidden bg-navy"
       style={{
-        backgroundImage: `url(${hero.image_url})`,
+        backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center"
       }}
@@ -14,7 +18,8 @@ export function Hero({ hero }: { hero: HeroSection }) {
       <div className="absolute inset-0 bg-navy/70" />
       <Container>
         <div className="relative py-16 sm:py-24">
-          <div className="max-w-2xl">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
             <p className="text-sm font-semibold tracking-widest text-gold">
               ANÁLISIS · ESTRATEGIA · DEFENSA
             </p>
@@ -38,6 +43,13 @@ export function Hero({ hero }: { hero: HeroSection }) {
                 Ver servicios
               </a>
             </div>
+          </div>
+
+            {rightLogo ? (
+              <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                <img src={rightLogo} alt="Logo" className="h-24 w-auto object-contain" />
+              </div>
+            ) : null}
           </div>
         </div>
       </Container>
