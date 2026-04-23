@@ -52,3 +52,19 @@ export const TeamCreateSchema = z.object({
 
 export const TeamUpdateSchema = TeamCreateSchema.partial();
 
+export const AdminUserCreateSchema = z.object({
+  username: z.string().min(3).max(60),
+  password: z.string().min(8).max(200),
+  role: z.string().min(1).max(50).optional()
+});
+
+export const AdminUserUpdateSchema = z.object({
+  username: z.string().min(3).max(60).optional(),
+  role: z.string().min(1).max(50).optional(),
+  is_active: z.boolean().optional()
+});
+
+export const AdminUserPasswordSchema = z.object({
+  password: z.string().min(8).max(200)
+});
+

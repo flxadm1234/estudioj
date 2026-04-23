@@ -35,6 +35,11 @@ Servicios:
 - Login: `POST /admin/login` (usa `ADMIN_USER` / `ADMIN_PASSWORD`)
 - CRUD protegido por JWT bajo `/admin/*`
 
+## Usuarios CMS (PostgreSQL)
+- Tabla: `admin_users` (usuario/clave almacenados como hash con `pgcrypto`)
+- Seed por defecto: usuario `admin` y contraseña `admin_change_me`
+- Administración de usuarios: `/admin/users`
+
 ## Envío de correos (leads)
 - Al enviar el formulario de contacto, siempre se guarda en `leads`.
 - Si configuras SMTP (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`), la API envía una notificación a `LEADS_NOTIFY_TO` (por defecto `studioj@stevedavila.com`).

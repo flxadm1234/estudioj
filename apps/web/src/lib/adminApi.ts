@@ -134,6 +134,43 @@ export const adminApi = {
         created_at: string;
       }[]
     >(`/api/admin/leads?limit=${limit}`);
+  },
+  listAdminUsers() {
+    return adminFetch<
+      {
+        id: string;
+        username: string;
+        role: string;
+        is_active: boolean;
+        last_login_at: string | null;
+        created_at: string;
+        updated_at: string;
+      }[]
+    >("/api/admin/users");
+  },
+  createAdminUser(body: { username: string; password: string; role?: string }) {
+    return adminFetch<{ id: string } & Record<string, unknown>>("/api/admin/users", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  },
+  patchAdminUser(id: string, body: { username?: string; role?: string; is_active?: boolean }) {
+    return adminFetch<{ id: string } & Record<string, unknown>>(`/api/admin/users/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  },
+  setAdminUserPassword(id: string, password: string) {
+    return adminFetch<{ id: string } & Record<string, unknown>>(`/api/admin/users/${id}/password`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ password })
+    });
+  },
+  deactivateAdminUser(id: string) {
+    return adminFetch<void>(`/api/admin/users/${id}`, { method: "DELETE" });
   }
 };
 

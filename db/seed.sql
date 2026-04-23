@@ -39,3 +39,7 @@ insert into team (name, role, specialty, photo_url, sort_order)
 values
   ('Steve Dávila', 'Socio Principal', 'Litigación y asesoría estratégica', 'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=800&q=80', 10)
 on conflict do nothing;
+
+insert into admin_users (username, password_hash, role)
+values ('admin', crypt('admin_change_me', gen_salt('bf')), 'superadmin')
+on conflict (username) do nothing;

@@ -1,4 +1,5 @@
 create extension if not exists pgcrypto;
+create extension if not exists citext;
 
 create table if not exists site_config (
   id uuid primary key default gen_random_uuid(),
@@ -72,6 +73,36 @@ create table if not exists leads (
 
 create index if not exists leads_created_at_idx on leads (created_at desc);
 
+create table if not exists admin_users (
+  id uuid primary key default gen_random_uuid(),
+  username citext not null,
+  password_hash text not null,
+  role text not null default 'admin',
+  is_active boolean not null default true,
+  last_login_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'admin_users'
+      and column_name = 'username'
+      and data_type = 'text'
+  ) then
+    alter table admin_users alter column username type citext using username::citext;
+  end if;
+exception when undefined_table then
+  null;
+end;
+$$;
+
+create unique index if not exists admin_users_username_uq on admin_users (username);
+
 create or replace function set_updated_at()
 returns trigger as $$
 begin
@@ -98,4 +129,9 @@ for each row execute function set_updated_at();
 drop trigger if exists trg_team_updated_at on team;
 create trigger trg_team_updated_at
 before update on team
+for each row execute function set_updated_at();
+
+drop trigger if exists trg_admin_users_updated_at on admin_users;
+create trigger trg_admin_users_updated_at
+before update on admin_users
 for each row execute function set_updated_at();

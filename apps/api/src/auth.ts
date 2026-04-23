@@ -4,10 +4,16 @@ import { env } from "./env";
 
 export type AdminTokenPayload = {
   sub: string;
+  username: string;
+  role: string;
 };
 
-export function signAdminToken() {
-  const payload: AdminTokenPayload = { sub: "admin" };
+export function signAdminToken(input: { id: string; username: string; role: string }) {
+  const payload: AdminTokenPayload = {
+    sub: input.id,
+    username: input.username,
+    role: input.role
+  };
   return jwt.sign(payload, env.API_JWT_SECRET, { expiresIn: "8h" });
 }
 
@@ -16,7 +22,8 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
   if (!token) return res.status(401).json({ error: "unauthorized" });
   try {
-    jwt.verify(token, env.API_JWT_SECRET);
+    const decoded = jwt.verify(token, env.API_JWT_SECRET) as AdminTokenPayload;
+    (res.locals as { admin?: AdminTokenPayload }).admin = decoded;
     return next();
   } catch {
     return res.status(401).json({ error: "unauthorized" });

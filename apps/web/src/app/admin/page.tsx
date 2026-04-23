@@ -16,6 +16,7 @@ export default function AdminHome() {
         <Card href="/admin/services" title="Servicios" />
         <Card href="/admin/team" title="Equipo" />
         <Card href="/admin/leads" title="Leads" />
+        <Card href="/admin/users" title="Usuarios" />
       </div>
     </AdminShell>
   );

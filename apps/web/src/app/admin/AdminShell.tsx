@@ -28,6 +28,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <NavLink href="/admin/services" label="Servicios" />
             <NavLink href="/admin/team" label="Equipo" />
             <NavLink href="/admin/leads" label="Leads" />
+            <NavLink href="/admin/users" label="Usuarios" />
             <button
               className="rounded-md bg-slate-900 px-3 py-1 text-white"
               onClick={() => {

@@ -28,8 +28,8 @@ const EnvSchema = z.object({
   POSTGRES_PASSWORD: z.string().default("postgres"),
   API_PORT: z.coerce.number().default(4000),
   API_JWT_SECRET: z.string().min(16),
-  ADMIN_USER: z.string().min(1),
-  ADMIN_PASSWORD: z.string().min(1)
+  ADMIN_USER: z.string().min(1).optional(),
+  ADMIN_PASSWORD: z.string().min(1).optional()
 });
 
 export const env = EnvSchema.parse(process.env);

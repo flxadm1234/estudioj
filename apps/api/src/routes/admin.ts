@@ -5,6 +5,14 @@ import { requireAdmin, signAdminToken } from "../auth";
 import { getHeroSection, getSiteConfig, updateHeroSection, updateSiteConfig } from "../content";
 import { asyncHandler } from "../asyncHandler";
 import {
+  createAdminUser,
+  deactivateAdminUser,
+  listAdminUsers,
+  setAdminUserPassword,
+  updateAdminUser,
+  verifyAdminCredentials
+} from "../adminUsers";
+import {
   adminListServices,
   adminListTeam,
   createService,
@@ -17,6 +25,9 @@ import {
 } from "../catalog";
 import {
   HeroUpdateSchema,
+  AdminUserCreateSchema,
+  AdminUserPasswordSchema,
+  AdminUserUpdateSchema,
   ServiceCreateSchema,
   ServiceUpdateSchema,
   SiteConfigUpdateSchema,
@@ -26,20 +37,81 @@ import {
 
 export const adminRouter = Router();
 
-adminRouter.post("/login", (req, res) => {
-  const parsed = z
-    .object({ username: z.string().min(1), password: z.string().min(1) })
-    .safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: "invalid_body" });
-  const { username, password } = parsed.data;
-  if (username !== env.ADMIN_USER || password !== env.ADMIN_PASSWORD) {
+adminRouter.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const parsed = z
+      .object({ username: z.string().min(1), password: z.string().min(1) })
+      .safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "invalid_body" });
+    const { username, password } = parsed.data;
+
+    const user = await verifyAdminCredentials(username, password);
+    if (user) {
+      const token = signAdminToken({ id: user.id, username: user.username, role: user.role });
+      return res.json({ token });
+    }
+
+    if (env.ADMIN_USER && env.ADMIN_PASSWORD) {
+      if (username === env.ADMIN_USER && password === env.ADMIN_PASSWORD) {
+        const token = signAdminToken({ id: "env_admin", username, role: "superadmin" });
+        return res.json({ token });
+      }
+    }
+
     return res.status(401).json({ error: "invalid_credentials" });
-  }
-  const token = signAdminToken();
-  return res.json({ token });
-});
+  })
+);
 
 adminRouter.use(requireAdmin);
+
+adminRouter.get(
+  "/users",
+  asyncHandler(async (_req, res) => {
+    return res.json(await listAdminUsers());
+  })
+);
+
+adminRouter.post(
+  "/users",
+  asyncHandler(async (req, res) => {
+    const parsed = AdminUserCreateSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "invalid_body" });
+    const created = await createAdminUser(parsed.data);
+    return res.status(201).json(created);
+  })
+);
+
+adminRouter.patch(
+  "/users/:id",
+  asyncHandler(async (req, res) => {
+    const parsed = AdminUserUpdateSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "invalid_body" });
+    const updated = await updateAdminUser(req.params.id, parsed.data);
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    return res.json(updated);
+  })
+);
+
+adminRouter.patch(
+  "/users/:id/password",
+  asyncHandler(async (req, res) => {
+    const parsed = AdminUserPasswordSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "invalid_body" });
+    const updated = await setAdminUserPassword(req.params.id, parsed.data.password);
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    return res.json(updated);
+  })
+);
+
+adminRouter.delete(
+  "/users/:id",
+  asyncHandler(async (req, res) => {
+    const updated = await deactivateAdminUser(req.params.id);
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    return res.status(204).send();
+  })
+);
 
 adminRouter.get(
   "/site-config",
