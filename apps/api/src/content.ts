@@ -5,6 +5,7 @@ export async function getSiteConfig() {
     `select
       site_name, domain, contact_email, phone, whatsapp_phone, address, logo_url,
       hero_logo_url,
+      hero_logo_height,
       about_title, about_body, stats, colors_hex, social_links
      from site_config
      order by created_at desc
@@ -17,6 +18,7 @@ export async function getSiteConfig() {
      returning
       site_name, domain, contact_email, phone, whatsapp_phone, address, logo_url,
       hero_logo_url,
+      hero_logo_height,
       about_title, about_body, stats, colors_hex, social_links`
   );
   return inserted.rows[0];

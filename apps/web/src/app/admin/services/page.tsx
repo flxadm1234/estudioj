@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminShell } from "@/app/admin/AdminShell";
 import { adminApi } from "@/lib/adminApi";
+import { serviceIconIdBySvg, serviceIconOptions, serviceIconsById } from "@/lib/serviceIcons";
 
 type AdminService = {
   id: string;
@@ -18,6 +19,7 @@ export default function AdminServicesPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [newIconId, setNewIconId] = useState<string>("");
 
   async function refresh() {
     setStatus("loading");
@@ -36,9 +38,14 @@ export default function AdminServicesPage() {
 
   async function onCreate() {
     if (newName.trim().length < 1 || newDesc.trim().length < 1) return;
-    await adminApi.createService({ name: newName.trim(), description: newDesc.trim() });
+    await adminApi.createService({
+      name: newName.trim(),
+      description: newDesc.trim(),
+      icon_svg: newIconId ? serviceIconsById[newIconId] : null
+    });
     setNewName("");
     setNewDesc("");
+    setNewIconId("");
     await refresh();
   }
 
@@ -64,6 +71,11 @@ export default function AdminServicesPage() {
         <div className="mt-4 grid gap-4">
           <Field label="Nombre" value={newName} onChange={setNewName} />
           <Textarea label="Descripción" value={newDesc} onChange={setNewDesc} />
+          <IconSelect
+            label="Ícono"
+            value={newIconId}
+            onChange={setNewIconId}
+          />
           <button
             onClick={onCreate}
             className="w-fit rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white"
@@ -115,6 +127,19 @@ export default function AdminServicesPage() {
                   setItems((cur) => cur.map((x) => (x.id === s.id ? { ...x, description: v } : x)))
                 }
               />
+              <IconSelect
+                label="Ícono"
+                value={serviceIconIdBySvg.get(s.icon_svg ?? "") ?? ""}
+                onChange={(iconId) =>
+                  setItems((cur) =>
+                    cur.map((x) =>
+                      x.id === s.id
+                        ? { ...x, icon_svg: iconId ? serviceIconsById[iconId] : null }
+                        : x
+                    )
+                  )
+                }
+              />
               <Field
                 label="Orden"
                 value={String(s.sort_order)}
@@ -131,7 +156,8 @@ export default function AdminServicesPage() {
                   onPatch(s.id, {
                     name: s.name,
                     description: s.description,
-                    sort_order: s.sort_order
+                    sort_order: s.sort_order,
+                    icon_svg: s.icon_svg
                   })
                 }
                 className="w-fit rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white"
@@ -143,6 +169,44 @@ export default function AdminServicesPage() {
         ))}
       </div>
     </AdminShell>
+  );
+}
+
+function IconSelect({
+  label,
+  value,
+  onChange
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="grid gap-2">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <div className="flex items-center gap-3">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-navy"
+        >
+          <option value="">Sin ícono</option>
+          {serviceIconOptions.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy/5 text-navy">
+          {value ? (
+            <span
+              className="[&>svg]:h-6 [&>svg]:w-6"
+              dangerouslySetInnerHTML={{ __html: serviceIconsById[value] }}
+            />
+          ) : null}
+        </div>
+      </div>
+    </label>
   );
 }
 

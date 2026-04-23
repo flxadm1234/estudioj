@@ -1,6 +1,14 @@
 import { Container } from "@/components/Container";
 import type { Service } from "@/lib/types";
 
+function canRenderSvg(svg: string) {
+  const v = svg.trim().toLowerCase();
+  if (!v.startsWith("<svg")) return false;
+  if (v.includes("<script")) return false;
+  if (v.includes("onload=") || v.includes("onerror=") || v.includes("onclick=")) return false;
+  return true;
+}
+
 export function ServicesGrid({ services }: { services: Service[] }) {
   return (
     <section id="servicios" className="bg-white py-12 sm:py-16">
@@ -19,7 +27,14 @@ export function ServicesGrid({ services }: { services: Service[] }) {
               key={s.id}
               className="rounded-xl border border-slate-200 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="h-10 w-10 rounded-lg bg-navy/5" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy/5 text-navy">
+                {s.icon_svg && canRenderSvg(s.icon_svg) ? (
+                  <span
+                    className="[&>svg]:h-6 [&>svg]:w-6"
+                    dangerouslySetInnerHTML={{ __html: s.icon_svg }}
+                  />
+                ) : null}
+              </div>
               <h3 className="mt-4 text-base font-semibold text-navy">{s.name}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 {s.description}

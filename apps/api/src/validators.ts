@@ -17,6 +17,7 @@ export const SiteConfigUpdateSchema = z.object({
   address: z.string().nullable().optional(),
   logo_url: z.string().url().nullable().optional(),
   hero_logo_url: z.string().url().nullable().optional(),
+  hero_logo_height: z.number().int().min(24).max(240).nullable().optional(),
   about_title: z.string().min(1).optional(),
   about_body: z.string().min(1).optional(),
   stats: z.record(z.number()).optional(),

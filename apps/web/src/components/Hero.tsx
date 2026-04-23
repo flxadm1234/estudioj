@@ -2,9 +2,21 @@ import type { HeroSection } from "@/lib/types";
 import { Container } from "@/components/Container";
 import { sanitizeImageUrl } from "@/lib/format";
 
-export function Hero({ hero, heroLogoUrl }: { hero: HeroSection; heroLogoUrl?: string | null }) {
+export function Hero({
+  hero,
+  heroLogoUrl,
+  heroLogoHeight
+}: {
+  hero: HeroSection;
+  heroLogoUrl?: string | null;
+  heroLogoHeight?: number | null;
+}) {
   const bg = sanitizeImageUrl(hero.image_url);
   const rightLogo = heroLogoUrl ? sanitizeImageUrl(heroLogoUrl) : null;
+  const logoHeight =
+    typeof heroLogoHeight === "number" && Number.isFinite(heroLogoHeight)
+      ? Math.max(24, Math.min(240, heroLogoHeight))
+      : 96;
 
   return (
     <section
@@ -47,7 +59,12 @@ export function Hero({ hero, heroLogoUrl }: { hero: HeroSection; heroLogoUrl?: s
 
             {rightLogo ? (
               <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                <img src={rightLogo} alt="Logo" className="h-24 w-auto object-contain" />
+                <img
+                  src={rightLogo}
+                  alt="Logo"
+                  className="w-auto object-contain"
+                  style={{ height: `${logoHeight}px` }}
+                />
               </div>
             ) : null}
           </div>

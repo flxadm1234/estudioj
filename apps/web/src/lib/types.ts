@@ -7,6 +7,7 @@ export type SiteConfig = {
   address: string | null;
   logo_url: string | null;
   hero_logo_url: string | null;
+  hero_logo_height: number | null;
   about_title: string;
   about_body: string;
   stats: Record<string, number>;

@@ -11,6 +11,7 @@ create table if not exists site_config (
   address text,
   logo_url text,
   hero_logo_url text,
+  hero_logo_height int,
   about_title text not null default 'Quiénes Somos',
   about_body text not null default 'Somos un estudio jurídico orientado a la excelencia técnica, la estrategia y la confidencialidad. Acompañamos a personas y empresas con un enfoque claro: proteger sus intereses y generar resultados.',
   stats jsonb not null default '{"cases_won":120,"clients":300,"years":10}'::jsonb,
@@ -21,6 +22,7 @@ create table if not exists site_config (
 );
 
 alter table site_config add column if not exists hero_logo_url text;
+alter table site_config add column if not exists hero_logo_height int;
 
 create unique index if not exists site_config_singleton on site_config ((true));
 

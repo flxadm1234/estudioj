@@ -25,6 +25,7 @@ export function getSiteConfig() {
     address: null,
     logo_url: null,
     hero_logo_url: null,
+    hero_logo_height: null,
     about_title: "Quiénes Somos",
     about_body:
       "Somos un estudio jurídico orientado a la excelencia técnica, la estrategia y la confidencialidad.",

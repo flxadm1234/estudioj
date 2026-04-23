@@ -87,6 +87,11 @@ export default function AdminSitePage() {
                 value={config.hero_logo_url ?? ""}
                 onChange={(v) => setConfig({ ...config, hero_logo_url: v || null })}
               />
+              <NumberField
+                label="Alto logo banner (px)"
+                value={config.hero_logo_height ?? 96}
+                onChange={(v) => setConfig({ ...config, hero_logo_height: v })}
+              />
               <Field
                 label="Correo"
                 value={config.contact_email}
@@ -109,7 +114,8 @@ export default function AdminSitePage() {
                 <img
                   src={sanitizeImageUrl(config.hero_logo_url)}
                   alt="Logo banner"
-                  className="mt-3 h-16 w-auto"
+                  className="mt-3 w-auto"
+                  style={{ height: `${Math.max(24, Math.min(240, config.hero_logo_height ?? 96))}px` }}
                 />
               </div>
             ) : null}
@@ -212,6 +218,33 @@ function Textarea({
         onChange={(e) => onChange(e.target.value)}
         rows={8}
         className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 font-mono text-xs outline-none focus:border-navy"
+      />
+    </label>
+  );
+}
+
+function NumberField({
+  label,
+  value,
+  onChange
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number | null) => void;
+}) {
+  return (
+    <label className="grid gap-2">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <input
+        type="number"
+        min={24}
+        max={240}
+        value={Number.isFinite(value) ? value : 96}
+        onChange={(e) => {
+          const n = Number(e.target.value);
+          onChange(Number.isFinite(n) ? n : null);
+        }}
+        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-navy"
       />
     </label>
   );
