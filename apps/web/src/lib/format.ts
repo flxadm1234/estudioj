@@ -3,6 +3,10 @@ export function normalizePhoneForWhatsApp(phone: string) {
 }
 
 export function sanitizeImageUrl(url: string) {
-  return url.trim().replace(/\)+$/g, "");
+  return url
+    .trim()
+    .replace(/`/g, "")
+    .trim()
+    .replace(/\)+$/g, "");
 }
 

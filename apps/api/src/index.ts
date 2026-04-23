@@ -11,6 +11,7 @@ app.use(cors({ origin: true }));
 app.use(express.json({ limit: "1mb" }));
 
 app.use("/api", publicRouter);
+app.use("/api/admin", adminRouter);
 app.use("/admin", adminRouter);
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
